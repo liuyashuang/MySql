@@ -20,6 +20,9 @@
     2NF:表中的记录是唯一的，通常设计一个主键就实现了
 
     3NF:表中不要有冗余数据，即表的信息能推导出来，就不应该单独设计一个字段
+    在表的 1对N情况下，为了提高效率，会出现反三范式。
+    反3NF:但是，没有冗余的数据库未必是最好的数据库，有时为了提高运行效率，就必须降低范式标准，适当保留冗余数据，
+    具体做法是：在概念数据模型设计时遵循第三范式，降低范式标准的工作放到物理数据模型设计时考虑，降低范式就是增加字段，允许冗余。
 
 #### 2. Sql语句的优化
 - ##### 如何在项目中，迅速的定位执行速度慢的语句（定位慢查询）
@@ -30,26 +33,30 @@
 <br/>`show status like 'com_select' show status like com_insert ···` //执行语句的次数</br>
 <br/>`show [session|global] status like ··· `//如果不写[session|global] 默认是session 会话（当前窗口）</br>
 <br/>`show status like 'connections'` //当前连接数</br>
-`show status like 'slow_queries'` //查询慢查询次数</br>
+<br>`show status like 'slow_queries'` //查询慢查询次数</br>
 - ##### 如何定位慢查询（mysql默认10秒是慢查询）
  `show variables like 'long_query_time'` //显示当前慢查询时间</br>
  <br/>`set long_query_time=1` //修改慢查询时间</br>
+
  <br/>`delimiter $$ `//修改命令执行结束符修改为'$$'</br>
+ <br>`drop  function rand_string$$`//删除自定的结束符</br>
 
 - 如何把慢查询的sql记录到日志中
 <br/>默认情况下，mysql不会记录慢查询，需要在启动mysql时候，指定记录慢查询</br>
 `bin\mysqld.exe --safe-mode --slow-query-log`[mysql5.5可以在my.ini指定，在bin目录上一级执行这个命令]
+
 - ##### 优化问题
    - **通过 explain语句可以分析，mysql如何执行你的sql语句**
    - **添加索引（主键索引、唯一索引、全文索引、普通索引）**
-      - **添加**
-         - **主键索引**
+      - **添加**</br>
+         **主键索引**
          <p/>将某个列设置为主键是，则该列就是主键索引。创建表后再添加,指令：`alter table 表名 add primary key(列名)`</P>
-         - **普通索引**
+         **普通索引**
          <p/>一般来说，普通索引的创建，是先创建表，然后再创建普通索引
          `create table 表名(···) create index 索引名 on 表名(列) `</p>
-         - **全文索引**
+         **全文索引**
          <p/>全文索引主要是针对文本的检索，比如文章，全文索引针对MyISAM生效</p>
+
          ```
          //创建
          create table articles(
@@ -60,9 +67,13 @@
          )engine=myisam charset utf8;
          ```
          </br>全文索引错误用法：不会使用到全文索引</br>
-         `select * from articles where body like '%mysql%'`；
+
+         `select * from articles where body like '%mysql%'`
+
          <br/>正确用法</br>
-         `select * from articles where match(title,body) against('database')`;
+
+         `select * from articles where match(title,body) against('database')`
+         
          <br/>**说明：**
          <br/> 1）在mysql中 fulltext索引只针对 myisam生效
          <br/> 2）针对英文生效->sphinx(coreseek) 技术处理中文
