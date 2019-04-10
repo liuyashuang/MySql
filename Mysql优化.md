@@ -50,10 +50,10 @@
    - **添加索引（主键索引、唯一索引、全文索引、普通索引）**
       - **添加**</br>
          **主键索引**
-         <p/>将某个列设置为主键是，则该列就是主键索引。创建表后再添加,指令：`alter table 表名 add primary key(列名)`</P>
+         <p/>将某个列设置为主键是，则该列就是主键索引。创建表后再添加,指令：`alter table 表名 add primary key(列名)`</P></br>
          **普通索引**
          <p/>一般来说，普通索引的创建，是先创建表，然后再创建普通索引
-         `create table 表名(···) create index 索引名 on 表名(列) `</p>
+         `create table 表名(···) create index 索引名 on 表名(列) `</p></br>
          **全文索引**
          <p/>全文索引主要是针对文本的检索，比如文章，全文索引针对MyISAM生效</p>
 
@@ -73,7 +73,7 @@
          <br/>正确用法</br>
 
          `select * from articles where match(title,body) against('database')`
-         
+
          <br/>**说明：**
          <br/> 1）在mysql中 fulltext索引只针对 myisam生效
          <br/> 2）针对英文生效->sphinx(coreseek) 技术处理中文
